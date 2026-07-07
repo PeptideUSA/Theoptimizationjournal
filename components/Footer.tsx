@@ -32,6 +32,7 @@ export default function Footer() {
             <ul className="mt-4 space-y-2 text-sm text-slate">
               <li><Link href="/about" className="hover:text-teal-deep">About</Link></li>
               <li><Link href="/articles" className="hover:text-teal-deep">All Articles</Link></li>
+              <li><Link href="/tools/reconstitution-calculator" className="hover:text-teal-deep">Reconstitution Calculator</Link></li>
             </ul>
           </div>
         </div>

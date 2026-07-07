@@ -5,6 +5,7 @@ const navLinks = [
   { label: "TRT & Hormones", href: "/category/trt-hormones" },
   { label: "Longevity", href: "/category/longevity" },
   { label: "Fitness", href: "/category/fitness-recovery" },
+  { label: "Calculator", href: "/tools/reconstitution-calculator" },
   { label: "About", href: "/about" },
 ];
 
