@@ -1,10 +1,8 @@
 import ArticleCard from "@/components/ArticleCard";
-import { articles } from "@/lib/articles";
+import { getPublishedArticles } from "@/lib/get-articles";
 
-export default function ArticlesPage() {
-  const sorted = [...articles].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+export default async function ArticlesPage() {
+  const articles = await getPublishedArticles();
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-16">
@@ -15,14 +13,18 @@ export default function ArticlesPage() {
         All Articles
       </h1>
       <p className="mt-3 max-w-xl text-slate">
-        Every article, newest first. Each one is cited — look for the numbered tags.
+        Every article, newest first.
       </p>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
-        {sorted.map((article) => (
-          <ArticleCard key={article.slug} article={article} />
-        ))}
-      </div>
+      {articles.length > 0 ? (
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {articles.map((article) => (
+            <ArticleCard key={article.id} article={article} />
+          ))}
+        </div>
+      ) : (
+        <p className="mt-10 text-slate">No articles published yet — check back soon.</p>
+      )}
     </section>
   );
 }

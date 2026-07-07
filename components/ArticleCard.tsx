@@ -1,7 +1,8 @@
 import Link from "next/link";
-import type { Article } from "@/lib/articles";
+import type { DbArticle } from "@/lib/get-articles";
+import { readTimeFor } from "@/lib/articles";
 
-export default function ArticleCard({ article }: { article: Article }) {
+export default function ArticleCard({ article }: { article: DbArticle }) {
   return (
     <Link
       href={`/articles/${article.slug}`}
@@ -11,7 +12,6 @@ export default function ArticleCard({ article }: { article: Article }) {
         <span className="font-mono text-[11px] uppercase tracking-widest text-teal-deep">
           {article.category}
         </span>
-        <span className="cite-tag">{article.citations}</span>
       </div>
 
       <h3 className="mt-4 font-display text-xl font-semibold leading-snug text-ink transition-colors group-hover:text-teal-deep">
@@ -23,9 +23,9 @@ export default function ArticleCard({ article }: { article: Article }) {
       </p>
 
       <div className="mt-6 flex items-center justify-between border-t border-line pt-4 text-xs text-slate">
-        <span>{article.readTime}</span>
+        <span>{readTimeFor(article.body)}</span>
         <span>
-          {new Date(article.date).toLocaleDateString("en-US", {
+          {new Date(article.created_at).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
             year: "numeric",

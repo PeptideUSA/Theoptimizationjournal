@@ -1,10 +1,7 @@
 import { notFound } from "next/navigation";
 import ArticleCard from "@/components/ArticleCard";
-import { categories, getByCategory } from "@/lib/articles";
-
-export function generateStaticParams() {
-  return categories.map((c) => ({ slug: c.slug }));
-}
+import { categories } from "@/lib/articles";
+import { getArticlesByCategory } from "@/lib/get-articles";
 
 export default async function CategoryPage({
   params,
@@ -16,7 +13,7 @@ export default async function CategoryPage({
 
   if (!category) notFound();
 
-  const items = getByCategory(category.name);
+  const items = await getArticlesByCategory(category.name);
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-16">
@@ -28,13 +25,13 @@ export default async function CategoryPage({
       </h1>
       <p className="mt-3 max-w-xl text-slate">{category.blurb}</p>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-3">
-        {items.map((article) => (
-          <ArticleCard key={article.slug} article={article} />
-        ))}
-      </div>
-
-      {items.length === 0 && (
+      {items.length > 0 ? (
+        <div className="mt-10 grid gap-6 md:grid-cols-3">
+          {items.map((article) => (
+            <ArticleCard key={article.id} article={article} />
+          ))}
+        </div>
+      ) : (
         <p className="mt-10 text-slate">No articles here yet — check back soon.</p>
       )}
     </section>
