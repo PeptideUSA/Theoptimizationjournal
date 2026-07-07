@@ -19,6 +19,21 @@ export default function AboutPage() {
           diagnose anything, or replace a conversation with a licensed physician.
         </p>
       </div>
+
+      <div className="mt-10 rounded-2xl border border-line bg-mint-soft p-6">
+        <span className="font-mono text-xs uppercase tracking-widest text-teal-deep">
+          Get in touch
+        </span>
+        <p className="mt-2 text-sm text-slate">
+          Questions, corrections, or press &amp; partnership inquiries:
+        </p>
+        <a
+          href="mailto:optimize@theoptimizationjournal.com"
+          className="mt-1 inline-block font-medium text-teal-deep hover:underline"
+        >
+          optimize@theoptimizationjournal.com
+        </a>
+      </div>
     </section>
   );
 }

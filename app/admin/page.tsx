@@ -9,6 +9,11 @@ export default async function AdminPage() {
     .select("*")
     .order("created_at", { ascending: false });
 
+  const { data: subscribers, count: subscriberCount } = await supabase
+    .from("subscribers")
+    .select("*", { count: "exact" })
+    .order("created_at", { ascending: false });
+
   return (
     <section className="mx-auto max-w-4xl px-6 py-16">
       <div className="flex items-center justify-between">
@@ -60,6 +65,42 @@ export default async function AdminPage() {
         ) : (
           <p className="px-6 py-10 text-center text-slate">
             No articles yet — click &ldquo;New Article&rdquo; to write your first one.
+          </p>
+        )}
+      </div>
+
+      <div className="mt-12 flex items-center justify-between">
+        <div>
+          <span className="font-mono text-xs uppercase tracking-widest text-teal-deep">
+            Email List
+          </span>
+          <h2 className="mt-2 font-display text-2xl font-semibold text-ink">
+            Subscribers ({subscriberCount ?? 0})
+          </h2>
+        </div>
+      </div>
+
+      <div className="mt-6 max-h-96 divide-y divide-line overflow-y-auto rounded-2xl border border-line">
+        {subscribers && subscribers.length > 0 ? (
+          subscribers.map((sub) => (
+            <div
+              key={sub.id}
+              className="flex items-center justify-between gap-4 px-6 py-3"
+            >
+              <span className="text-sm text-ink">{sub.email}</span>
+              <span className="text-xs text-slate">
+                {new Date(sub.created_at).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
+            </div>
+          ))
+        ) : (
+          <p className="px-6 py-10 text-center text-slate">
+            No subscribers yet — they&rsquo;ll show up here once people sign up
+            on the homepage.
           </p>
         )}
       </div>

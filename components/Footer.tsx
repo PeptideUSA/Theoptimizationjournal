@@ -13,6 +13,12 @@ export default function Footer() {
               Evidence-based articles on peptides, hormone health, longevity, and
               performance. We read the studies, cite our sources, and skip the hype.
             </p>
+            <a
+              href="mailto:optimize@theoptimizationjournal.com"
+              className="mt-4 inline-block text-sm font-medium text-teal-deep hover:underline"
+            >
+              optimize@theoptimizationjournal.com
+            </a>
           </div>
           <div>
             <span className="font-mono text-xs uppercase tracking-widest text-teal-deep">
