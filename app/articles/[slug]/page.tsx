@@ -1,7 +1,41 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { categorySlug, readTimeFor } from "@/lib/articles";
 import { getArticleBySlug } from "@/lib/get-articles";
+import ShareButtons from "@/components/ShareButtons";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const article = await getArticleBySlug(slug);
+
+  if (!article) {
+    return { title: "Article not found" };
+  }
+
+  const url = `https://theoptimizationjournal.com/articles/${article.slug}`;
+
+  return {
+    title: `${article.title} — The Optimization Journal`,
+    description: article.excerpt ?? undefined,
+    openGraph: {
+      title: article.title,
+      description: article.excerpt ?? undefined,
+      url,
+      type: "article",
+      siteName: "The Optimization Journal",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.excerpt ?? undefined,
+    },
+  };
+}
 
 export default async function ArticlePage({
   params,
@@ -12,6 +46,8 @@ export default async function ArticlePage({
   const article = await getArticleBySlug(slug);
 
   if (!article) notFound();
+
+  const url = `https://theoptimizationjournal.com/articles/${article.slug}`;
 
   return (
     <article className="mx-auto max-w-3xl px-6 py-16">
@@ -52,6 +88,10 @@ export default async function ArticlePage({
         This article is for educational and research purposes only and is not
         medical advice. Consult a licensed physician before making health
         decisions.
+      </div>
+
+      <div className="mt-8 border-t border-line pt-8">
+        <ShareButtons url={url} title={article.title} />
       </div>
 
       <Link

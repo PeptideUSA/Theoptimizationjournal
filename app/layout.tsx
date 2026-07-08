@@ -22,9 +22,17 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://theoptimizationjournal.com"),
   title: "The Optimization Journal — Evidence-Based Health, Performance & Longevity",
   description:
     "Research-backed articles on peptides, TRT, longevity, fitness, and recovery. We read the studies so you don't have to guess.",
+  openGraph: {
+    siteName: "The Optimization Journal",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
