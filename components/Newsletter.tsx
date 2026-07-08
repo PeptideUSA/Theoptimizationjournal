@@ -43,7 +43,8 @@ export default function Newsletter() {
         </h2>
         <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-mint/90">
           A plain-English breakdown of the most-studied research peptides, delivered
-          to your inbox. No spam, just the studies.
+          to your inbox — plus our monthly newsletter with new research and new
+          articles. No spam, unsubscribe anytime.
         </p>
 
         {status === "success" ? (
