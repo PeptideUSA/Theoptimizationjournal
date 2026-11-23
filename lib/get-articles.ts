@@ -1,6 +1,5 @@
-import { localArticles } from "@/content/articles";
 import { createClient } from "@/lib/supabase/server";
-import { connection } from "next/server";
+import { localArticles } from "@/lib/local-articles";
 
 export type DbArticle = {
   id: string;
@@ -14,52 +13,33 @@ export type DbArticle = {
   updated_at: string;
 };
 
-function canQuerySupabase() {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  );
+function byNewest(a: DbArticle, b: DbArticle) {
+  return Date.parse(b.created_at) - Date.parse(a.created_at);
 }
 
-function byNewest(articles: DbArticle[]) {
-  return [...articles].sort(
-    (a, b) =>
-      new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-  );
-}
-
-// File-backed articles override a database row with the same slug.
-function mergeArticles(remote: DbArticle[], local: DbArticle[]) {
-  const bySlug = new Map<string, DbArticle>();
-  for (const article of remote) bySlug.set(article.slug, article);
-  for (const article of local) {
-    if (article.published) bySlug.set(article.slug, article);
-  }
-  return byNewest([...bySlug.values()]);
+function mergeArticles(remote: DbArticle[], category?: string): DbArticle[] {
+  const slugs = new Set(remote.map((article) => article.slug));
+  const extras = localArticles.filter((article) => {
+    if (!article.published || slugs.has(article.slug)) return false;
+    if (category && article.category !== category) return false;
+    return true;
+  });
+  return [...remote, ...extras].sort(byNewest);
 }
 
 export async function getPublishedArticles(): Promise<DbArticle[]> {
-  await connection();
-  if (!canQuerySupabase()) return byNewest(localArticles.filter((a) => a.published));
-
   const supabase = await createClient();
   const { data } = await supabase
     .from("articles")
     .select("*")
     .eq("published", true)
     .order("created_at", { ascending: false });
-  return mergeArticles(data ?? [], localArticles);
+  return mergeArticles(data ?? []);
 }
 
 export async function getArticlesByCategory(
   category: string
 ): Promise<DbArticle[]> {
-  await connection();
-  const local = localArticles.filter(
-    (article) => article.published && article.category === category
-  );
-  if (!canQuerySupabase()) return byNewest(local);
-
   const supabase = await createClient();
   const { data } = await supabase
     .from("articles")
@@ -67,25 +47,22 @@ export async function getArticlesByCategory(
     .eq("published", true)
     .eq("category", category)
     .order("created_at", { ascending: false });
-  return mergeArticles(data ?? [], local);
+  return mergeArticles(data ?? [], category);
 }
 
 export async function getArticleBySlug(
   slug: string
 ): Promise<DbArticle | null> {
-  await connection();
-  const local = localArticles.find(
-    (article) => article.published && article.slug === slug
-  );
-  if (local) return local;
-  if (!canQuerySupabase()) return null;
-
   const supabase = await createClient();
   const { data } = await supabase
     .from("articles")
     .select("*")
     .eq("published", true)
     .eq("slug", slug)
-    .maybeSingle();
-  return data ?? null;
+    .single();
+  if (data) return data;
+  return (
+    localArticles.find((article) => article.published && article.slug === slug) ??
+    null
+  );
 }
