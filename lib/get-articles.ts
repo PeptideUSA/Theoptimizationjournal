@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { localArticles } from "@/lib/local-articles";
 
 export type DbArticle = {
   id: string;
@@ -12,6 +13,20 @@ export type DbArticle = {
   updated_at: string;
 };
 
+function byNewest(a: DbArticle, b: DbArticle) {
+  return Date.parse(b.created_at) - Date.parse(a.created_at);
+}
+
+function mergeArticles(remote: DbArticle[], category?: string): DbArticle[] {
+  const slugs = new Set(remote.map((article) => article.slug));
+  const extras = localArticles.filter((article) => {
+    if (!article.published || slugs.has(article.slug)) return false;
+    if (category && article.category !== category) return false;
+    return true;
+  });
+  return [...remote, ...extras].sort(byNewest);
+}
+
 export async function getPublishedArticles(): Promise<DbArticle[]> {
   const supabase = await createClient();
   const { data } = await supabase
@@ -19,7 +34,7 @@ export async function getPublishedArticles(): Promise<DbArticle[]> {
     .select("*")
     .eq("published", true)
     .order("created_at", { ascending: false });
-  return data ?? [];
+  return mergeArticles(data ?? []);
 }
 
 export async function getArticlesByCategory(
@@ -32,7 +47,7 @@ export async function getArticlesByCategory(
     .eq("published", true)
     .eq("category", category)
     .order("created_at", { ascending: false });
-  return data ?? [];
+  return mergeArticles(data ?? [], category);
 }
 
 export async function getArticleBySlug(
@@ -45,5 +60,9 @@ export async function getArticleBySlug(
     .eq("published", true)
     .eq("slug", slug)
     .single();
-  return data ?? null;
+  if (data) return data;
+  return (
+    localArticles.find((article) => article.published && article.slug === slug) ??
+    null
+  );
 }
