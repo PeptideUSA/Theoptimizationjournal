@@ -132,8 +132,8 @@ export const localArticles: DbArticle[] = [
       "Oral anabolic steroids can crush HDL and push LDL and ApoB in the wrong direction. Ezetimibe lowers LDL by blocking cholesterol absorption in the gut, and it has real outcome data when added to a statin — but it does almost nothing for HDL, and it has never been tested in men on cycles.",
     body,
     published: true,
-    created_at: "2026-11-23T16:00:00.000Z",
-    updated_at: "2026-11-23T16:00:00.000Z",
+    created_at: "2026-10-30T16:00:00.000Z",
+    updated_at: "2026-10-30T16:00:00.000Z",
   },
   {
     id: "local-t3-active-thyroid-hormone-bloodwork",
@@ -145,7 +145,7 @@ export const localArticles: DbArticle[] = [
       "Fatigue, cold intolerance, a stubborn LDL, and a testosterone workup that still doesn't explain how you feel can all sit downstream of thyroid hormone. The hormone that actually does the work is T3 — and a TSH, or a total T4, does not measure it. Here's what the research supports testing, what it doesn't, and why treatment still belongs with a physician.",
     body: t3Body,
     published: true,
-    created_at: "2026-11-23T12:00:00.000Z",
-    updated_at: "2026-11-23T12:00:00.000Z",
+    created_at: "2026-09-18T16:00:00.000Z",
+    updated_at: "2026-09-18T16:00:00.000Z",
   },
 ];
